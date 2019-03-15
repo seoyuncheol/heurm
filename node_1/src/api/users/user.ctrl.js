@@ -28,12 +28,12 @@ exports.getThumbnail = async ctx => {
   // 계정찾기
   let account;
   try {
-    account = await Account.findByUsername;
+    account = await Account.findByUsername(username);
   } catch (e) {
     ctx.throw(500, e);
   }
 
-  if (!accout) {
+  if (!account) {
     ctx.status = 404;
     return;
   }

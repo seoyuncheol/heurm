@@ -2,6 +2,8 @@ const Account = require("models/account");
 const Post = require("models/post");
 const Joi = require("joi");
 const ObjectId = require("mongoose").Types.ObjectId;
+const redis = require("redis");
+const publisher = redis.createClient();
 
 exports.write = async ctx => {
   /* 유저 검증하기 */
@@ -44,8 +46,6 @@ exports.write = async ctx => {
 
   const { content } = ctx.request.body;
 
-  console.log(content);
-
   let post;
   try {
     post = await Post.write({
@@ -56,9 +56,18 @@ exports.write = async ctx => {
   } catch (e) {
     ctx.throw(500, e);
   }
-  ctx.body = post;
 
-  // todo : 소켓을 통하여 접속중인 유저에게 실시간 포스트 정보 전송
+  /* 포스트 정보 반환 */
+  ctx.body = post;
+  console.log("-------------------");
+  console.log(post);
+  console.log("-------------------");
+
+  /* 데이터를 리덕스 액션 형식으로 전송 */
+  publisher.publish(
+    "posts",
+    JSON.stringify({ type: "post/RECEIVE_NEW_POST", payload: post })
+  );
 };
 
 exports.list = async ctx => {

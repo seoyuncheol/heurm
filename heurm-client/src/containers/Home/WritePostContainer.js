@@ -11,6 +11,11 @@ class WritePostContainer extends Component {
     HomeActions.changeWritePostInput(e.target.value);
   };
   handlePost = async () => {
+    this.input.blur();
+    setTimeout(() => {
+      this.input.focus();
+    }, 100);
+
     const { HomeActions, value } = this.props;
 
     // 알림에서 보여줄 DOM
@@ -34,18 +39,22 @@ class WritePostContainer extends Component {
     }
 
     try {
-      await HomeActions.writePorst(value);
+      await HomeActions.writePost(value);
       toast(message("생각이 작성되었습니다."), { type: "success" });
     } catch (e) {
       toast(message("오류가 발생했습니다."), { type: "error" });
     }
-    HomeActions.writePost(value);
   };
   render() {
     const { handleChange, handlePost } = this;
     const { value } = this.props;
     return (
-      <WritePost value={value} onChange={handleChange} onPost={handlePost} />
+      <WritePost
+        value={value}
+        onChange={handleChange}
+        onPost={handlePost}
+        inputRef={ref => (this.input = ref)}
+      />
     );
   }
 }

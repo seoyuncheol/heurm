@@ -18,7 +18,9 @@
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0",
-    "mongoose": "^5.4.18"
+    "koa-websocket": "^5.0.1",
+    "mongoose": "^5.4.18",
+    "redis": "^2.8.0"
   },
   "devDependencies": {
     "nodemon": "^1.18.10"

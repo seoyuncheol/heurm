@@ -25,7 +25,7 @@ export default handleActions(
       type: WRITE_POST,
       onPending: (state, action) =>
         produce(state, draft => {
-          draft = writePost.value = "";
+          draft.writePost.value = "";
         })
     })
   },

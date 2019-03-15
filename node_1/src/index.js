@@ -4,7 +4,10 @@ const { jwtMiddleware } = require("lib/token");
 const Router = require("koa-router");
 const bodyParser = require("koa-bodyparser");
 const mongoose = require("mongoose");
-const app = new Koa();
+const websockifiy = require("koa-websocket");
+const app = websockifiy(new Koa());
+const ws = require("./ws");
+
 const router = new Router();
 const api = require("./api");
 // 미들웨어란 사용자의 요청이 들어왔을때 실행되는 하나의 함수.
@@ -27,6 +30,7 @@ app.use(bodyParser());
 app.use(jwtMiddleware);
 app.use(router.routes());
 app.use(router.allowedMethods()); // router 에서 사용되는 함수를 허용해주겠다.
+app.use(ws.routes()).use(ws.allowedMethods());
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

@@ -33,7 +33,7 @@ const Account = new Schema({
 });
 
 Account.statics.findByUsername = function(username) {
-  return this.findOne({ "prodile,username": username }).exec();
+  return this.findOne({ "profile.username": username }).exec();
 };
 
 Account.statics.findByEmail = function(email) {
@@ -75,6 +75,6 @@ Account.methods.generateToken = function() {
 Account.methods.increaseThoughtCount = function() {
   this.thoughtCount++;
   return this.save();
-}
+};
 
 module.exports = mongoose.model("Account", Account);
