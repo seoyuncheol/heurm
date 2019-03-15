@@ -8,6 +8,7 @@ import koreanStrings from "react-timeago/lib/language-strings/ko";
 import buildFormatter from "react-timeago/lib/formatters/buildFormatter";
 
 import { media, shadow } from "lib/styleUtils";
+import PostFooter from "./PostFooter";
 
 const formatter = buildFormatter(koreanStrings); // 한글 형식으로 보여주기 위해 필요
 
@@ -19,7 +20,6 @@ const Wrapper = styled.div`
   ${media.tablet`
         width: 100%;
     `}
-    height: 400px;
   margin-bottom: 1rem;
   background: white;
   ${shadow(1)}
@@ -78,8 +78,15 @@ const Content = styled.div`
   white-space: pre-wrap;
 `;
 
-const Post = ({ post }) => {
-  const { count, username, content, comments, listsCount, createdAt } = post;
+const Post = ({ post, onToggleLike }) => {
+  const { _id, count, username, content, likesCount, liked, createdAt } = post;
+
+  const toggleLike = () =>
+    onToggleLike({
+      postId: _id,
+      liked
+    });
+
   return (
     <Wrapper>
       <PostHead>
@@ -91,6 +98,11 @@ const Post = ({ post }) => {
         </Time>
       </PostHead>
       <Content>{content}</Content>
+      <PostFooter
+        likesCount={likesCount}
+        liked={liked}
+        onToggleLike={toggleLike}
+      />
     </Wrapper>
   );
 };

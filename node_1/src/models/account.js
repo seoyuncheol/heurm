@@ -76,5 +76,4 @@ Account.methods.increaseThoughtCount = function() {
   this.thoughtCount++;
   return this.save();
 };
-
 module.exports = mongoose.model("Account", Account);

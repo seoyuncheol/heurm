@@ -5,7 +5,7 @@ import oc from "open-color";
 const Wrapper = styled.div`
   background: ${oc.cyan[4]};
   height: 4px;
-  position: absolute;
+  position: relative;
   left: 0px;
   bottom: 0px;
   width: ${props => props.percentage + "%"};

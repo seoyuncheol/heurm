@@ -5,10 +5,10 @@ import { shadow, media } from "lib/styleUtils";
 import Textarea from "react-textarea-autosize";
 import Progress from "./Progress";
 
+// padding: 1rem;
 const Wrapper = styled.div`
   width: 768px;
   margin: 0 auto;
-  padding: 1rem;
   background: ${oc.gray[7]};
   ${shadow(1)}
   ${media.desktop`
@@ -30,6 +30,7 @@ const StyledTextarea = styled(Textarea)`
   ::placeholder {
     color: ${oc.gray[3]};
   }
+  padding: 1rem;
   ${media.tablet`
         font-size: 1rem;
     `}

@@ -30,8 +30,7 @@ app.use(bodyParser());
 app.use(jwtMiddleware);
 app.use(router.routes());
 app.use(router.allowedMethods()); // router 에서 사용되는 함수를 허용해주겠다.
-app.use(ws.routes()).use(ws.allowedMethods());
-
+app.ws.use(ws.routes()).use(ws.allowedMethods());
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server is listening to ${port} port`);

@@ -3,10 +3,29 @@ import PostList from "components/Shared/PostList";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as postActions from "redux/modules/posts";
-import { showPrefetchedPost } from "redux/modules/posts";
+import { toast } from "react-toastify";
 
 class PostListContainer extends Component {
   prev = null;
+
+  handleToggleLike = ({ postId, liked }) => {
+    const { PostActions, logged } = this.props;
+
+    const message = message => (
+      <div style={{ fontSize: "1.1rem" }}>{message}</div>
+    );
+
+    if (!logged) {
+      return toast(message("로그인 후 이용 하실 수 있습니다."), {
+        type: "error"
+      });
+    }
+    if (liked) {
+      PostActions.unlikePost(postId);
+    } else {
+      PostActions.likePost(postId);
+    }
+  };
 
   load = async () => {
     const { PostActions } = this.props;
@@ -64,15 +83,17 @@ class PostListContainer extends Component {
 
   render() {
     const { data } = this.props;
-    return <PostList posts={data} />;
+    const { handleToggleLike } = this;
+    return <PostList posts={data} onToggleLike={handleToggleLike} />;
   }
 }
 
 export default connect(
-  ({ posts }) => ({
+  ({ posts, user }) => ({
     next: posts.next,
     data: posts.data,
-    nextData: posts.nextData
+    nextData: posts.nextData,
+    logged: user.logged
   }),
   dispatch => ({
     PostActions: bindActionCreators(postActions, dispatch)
