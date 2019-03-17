@@ -50,10 +50,10 @@ exports.unlike = async ctx => {
   }
 
   /* 포스트 찾기 */
-  const { postId } = ctx.parmas;
+  const { postId } = ctx.params;
   const { username } = user.profile;
 
-  let Post = null;
+  let post = null;
 
   try {
     post = await Post.findById(postId, {

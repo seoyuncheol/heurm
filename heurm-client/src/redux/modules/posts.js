@@ -5,16 +5,23 @@ import * as PostAPI from "lib/api/posts";
 import { pender } from "redux-pender";
 
 const LOAD_POST = "posts/LOAD_POST";
-const PREFETCH_POST = "posts/post_PREFETCH_POST";
-const SHOW_PREFETCHED_POST = "posts/post_SHOW_PREFETCHED_POST";
+const PREFETCH_POST = "posts/PREFETCH_POST";
+const SHOW_PREFETCHED_POST = "posts/SHOW_PREFETCHED_POST";
 const RECEIVE_NEW_POST = "posts/RECEIVE_NEW_POST";
 const LIKE_POST = "posts/LIKE_POST";
 const UNLIKE_POST = "posts/UNLIKE_POST";
+
+// 덧글
+const TOGGLE_COMMENT = "posts/TOGGLE_COMMENT";
+const CHANGE_COMMENT_INPUT = "posts/CHANGE_COMMENT_INPUT";
 
 export const loadPost = createAction(LOAD_POST, PostAPI.list);
 export const prefetchPost = createAction(PREFETCH_POST, PostAPI.next);
 export const showPrefetchedPost = createAction(SHOW_PREFETCHED_POST);
 export const receiveNewPost = createAction(RECEIVE_NEW_POST);
+export const toggleComment = createAction(TOGGLE_COMMENT);
+export const changeCommentInput = createAction(CHANGE_COMMENT_INPUT);
+
 export const likePost = createAction(
   LIKE_POST,
   PostAPI.like,
@@ -29,7 +36,8 @@ export const unlikePost = createAction(
 const initialState = {
   next: "",
   data: [],
-  nextData: []
+  nextData: [],
+  comments: {}
 };
 
 export default handleActions(
@@ -38,36 +46,50 @@ export default handleActions(
       type: LOAD_POST,
       onSuccess: (state, action) => {
         const { next, data } = action.payload.data;
+
         return produce(state, draft => {
           draft.next = next;
           draft.data = data;
         });
       }
     }),
+
     ...pender({
       type: PREFETCH_POST,
-      onSucess: (state, action) => {
-        const nextData = state.nextData;
+
+      onSuccess: (state, action) => {
+        const { next, data } = action.payload.data;
         return produce(state, draft => {
-          draft.data.concat(nextData);
-          draft.nextData = [];
+          draft.next = next;
+          draft.nextData = data;
         });
       }
     }),
-    [RECEIVE_NEW_POST]: (state, action) => {
-      return produce(state, draft => {
+
+    [SHOW_PREFETCHED_POST]: (state, action) =>
+      produce(state, draft => {
+        let { data, nextData } = state;
+        data = data.concat(nextData);
+
+        draft.data = data;
+        draft.nextData = [];
+      }),
+
+    [RECEIVE_NEW_POST]: (state, action) =>
+      produce(state, draft => {
         draft.data.unshift(action.payload);
-      });
-    },
+      }),
 
     ...pender({
       type: LIKE_POST,
       onPending: (state, action) => {
         const index = state.data.findIndex(post => post._id === action.meta);
+        console.log(index);
+
         return produce(state, draft => {
           let post = draft.data[index];
           post.liked = true;
-          post.likedCount += 1;
+          post.likesCount += 1;
         });
       },
       onSuccess: (state, action) => {
@@ -82,10 +104,12 @@ export default handleActions(
       type: UNLIKE_POST,
       onPending: (state, action) => {
         const index = state.data.findIndex(post => post._id === action.meta);
+        console.log(index);
+
         return produce(state, draft => {
           let post = draft.data[index];
           post.liked = false;
-          post.likedCount -= 1;
+          post.likesCount -= 1;
         });
       },
       onSuccess: (state, action) => {
@@ -94,7 +118,24 @@ export default handleActions(
           draft.data[index].likesCount = action.payload.data.likesCount;
         });
       }
-    })
+    }),
+
+    [TOGGLE_COMMENT]: (state, action) =>
+      produce(state, draft => {
+        const comment = draft.comments[action.payload];
+        if (comment) {
+          comment.visible = !comment.visible;
+        }
+
+        comment.visible = true;
+        comment.value = "";
+      }),
+
+    [CHANGE_COMMENT_INPUT]: (state, action) =>
+      produce(state, draft => {
+        const { postId, value } = action.payload;
+        draft.comments[postId].value = value;
+      })
   },
   initialState
 );

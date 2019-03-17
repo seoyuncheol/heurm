@@ -64,7 +64,7 @@ Post.statics.like = function({ _id, username }) {
     },
     {
       new: true,
-      select: "likeCount"
+      select: "likesCount"
     }
   ).exec();
 };
@@ -78,9 +78,18 @@ Post.statics.unlike = function({ _id, username }) {
     },
     {
       new: true,
-      select: "likeCount"
+      select: "likesCount"
     }
   ).exec();
+};
+
+Post.methods.writeComment = function({ username, text }) {
+  this.comments.unshift({
+    username,
+    text
+  });
+
+  return this.save();
 };
 
 module.exports = mongoose.model("Post", Post);

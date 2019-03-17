@@ -33,8 +33,10 @@ class PostListContainer extends Component {
     try {
       await PostActions.loadPost();
       const { next } = this.props;
+      console.log(next);
 
       if (next) {
+        console.log("next exist");
         await PostActions.prefetchPost(next);
       }
     } catch (e) {
