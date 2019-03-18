@@ -33,10 +33,8 @@ class PostListContainer extends Component {
     try {
       await PostActions.loadPost();
       const { next } = this.props;
-      console.log(next);
 
       if (next) {
-        console.log("next exist");
         await PostActions.prefetchPost(next);
       }
     } catch (e) {
@@ -74,6 +72,11 @@ class PostListContainer extends Component {
     }
   };
 
+  handleCommentClick = postId => {
+    const { PostActions } = this.props;
+    PostActions.toggleComment(postId);
+  };
+
   componentDidMount() {
     this.load();
     window.addEventListener("scroll", this.handleScroll);
@@ -85,8 +88,14 @@ class PostListContainer extends Component {
 
   render() {
     const { data } = this.props;
-    const { handleToggleLike } = this;
-    return <PostList posts={data} onToggleLike={handleToggleLike} />;
+    const { handleToggleLike, handleCommentClick } = this;
+    return (
+      <PostList
+        posts={data}
+        onToggleLike={handleToggleLike}
+        onCommentClick={handleCommentClick}
+      />
+    );
   }
 }
 

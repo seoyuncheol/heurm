@@ -84,7 +84,6 @@ export default handleActions(
       type: LIKE_POST,
       onPending: (state, action) => {
         const index = state.data.findIndex(post => post._id === action.meta);
-        console.log(index);
 
         return produce(state, draft => {
           let post = draft.data[index];
@@ -104,7 +103,6 @@ export default handleActions(
       type: UNLIKE_POST,
       onPending: (state, action) => {
         const index = state.data.findIndex(post => post._id === action.meta);
-        console.log(index);
 
         return produce(state, draft => {
           let post = draft.data[index];
@@ -122,13 +120,13 @@ export default handleActions(
 
     [TOGGLE_COMMENT]: (state, action) =>
       produce(state, draft => {
-        const comment = draft.comments[action.payload];
+        const comment = state.comments[action.payload];
+        console.log(comment);
         if (comment) {
-          comment.visible = !comment.visible;
+          draft.comments[action.payload].visible = !comment.visible;
+          console.log(!comment.visible);
         }
-
-        comment.visible = true;
-        comment.value = "";
+        draft.comments[action.payload] = { visible: true, value: "" };
       }),
 
     [CHANGE_COMMENT_INPUT]: (state, action) =>

@@ -71,7 +71,7 @@ const PostFooter = ({
       <span>좋아요 {likesCount}개</span>
     </Likes>
     <Comments>
-      <FaCommentDots />
+      <FaCommentDots onClick={onCommentClick} />
       <span>덧글 {comments.length}개</span>
     </Comments>
   </Wrapper>
